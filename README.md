@@ -15,6 +15,19 @@ Deploy BeakerX on DC/OS
 dcos package install beakerx
 ```
 
+Deploy Spark on DC/OS
+```
+dcos package install spark
+```
+
+Deploy ksonnet
+```
+brew install ksonnet/tap/ks
+```
+
+[Deploy kubeflow](https://www.kubeflow.org/docs/about/user_guide/)
+
+
 Deploy Portworx-Hadoop on DC/OS
 ```
 dcos package install portworx-hadoop
@@ -25,10 +38,6 @@ Deploy Portworx-Kafka on DC/OS
 dcos package install portworx-kafka
 ```
 
-Deploy Spark on DC/OS
-```
-dcos package install spark
-```
 
 
 
