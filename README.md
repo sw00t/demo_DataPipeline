@@ -5,11 +5,14 @@ You will need to provision a Mesosphere DC/OS Enterprise Edition cluster in `per
 
 A DC/OS cluster with at least 8 Private Agents is required, for an aggregate amount of 36 CPU, 132 GiB Memory, and 1 TiB storage.
 
+Prepare the cluster by deploying Kubernetes on DC/OS
+```
+test
+```
 
 
 
-
-Resources, Made possible by and/or for:
+Resources, made possible by and/or for:
 * [Mesosphere DC/OS](https://dcos.io)
 * [Mesosphere DC/OS Enterprise](https://mesosphere.com/product)
 * [KubeCon EU 2018, Bringing Your Data Pipeline into The Machine Learning Era](https://www.youtube.com/watch?v=f_-3rQoudnc)
