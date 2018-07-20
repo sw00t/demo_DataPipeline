@@ -46,5 +46,5 @@ Resources, made possible by and/or for:
 * [Mesosphere DC/OS Enterprise](https://mesosphere.com/product)
 * [KubeCon EU 2018, Bringing Your Data Pipeline into The Machine Learning Era](https://www.youtube.com/watch?v=f_-3rQoudnc)
 * [Joerg Schad](https://github.com/joerg84)
-* [Kubeflow](https://www.kubeflow.org/docs/about/user_guide/)
+* [Kubeflow](https://www.kubeflow.org)
 * [Portworx](https://www.portworx.com)
