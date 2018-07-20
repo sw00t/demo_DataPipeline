@@ -1,5 +1,7 @@
 # DataPipeline-Kubeflow-DCOS
-Mesosphere repository for Data Pipeline workshops featuring DC/OS, Kubernetes, Kubeflow, TensorFlow, Jupyter, Spark, Portworx, HDFS, Kafka. Contents within this repository are intended for internal Mesosphere staff only.
+***This repository is intended for internal Mesosphere staff only***
+
+Mesosphere repository for Data Pipeline workshops featuring DC/OS, Kubernetes, Kubeflow, TensorFlow, Jupyter, Spark, Portworx, HDFS, Kafka. 
 
 You will need to provision a Mesosphere DC/OS Enterprise Edition cluster in `permissive` mode.
 
