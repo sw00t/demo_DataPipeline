@@ -5,9 +5,29 @@ You will need to provision a Mesosphere DC/OS Enterprise Edition cluster in `per
 
 A DC/OS cluster with at least 8 Private Agents is required, for an aggregate amount of 36 CPU, 132 GiB Memory, and 1 TiB storage.
 
-Prepare the cluster by deploying Kubernetes on DC/OS
+Deploy Kubernetes on DC/OS
 ```
-test
+dcos package install kubernetes
+```
+
+Deploy BeakerX on DC/OS
+```
+dcos package install beakerx
+```
+
+Deploy Portworx-Hadoop on DC/OS
+```
+dcos package install portworx-hadoop
+```
+
+Deploy Portworx-Kafka on DC/OS
+```
+dcos package install portworx-kafka
+```
+
+Deploy Spark on DC/OS
+```
+dcos package install spark
 ```
 
 
