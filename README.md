@@ -3,7 +3,7 @@ Mesosphere repository for Data Pipeline workshops featuring DC/OS, Kubernetes, K
 
 You will need to provision a Mesosphere DC/OS Enterprise Edition cluster in `permissive` mode.
 
-A DC/OS cluster with at least 8 Private Agents is required, for an aggregate amount of 36 CPU, 132 GiB Memory, and 1 TiB storage.
+A DC/OS cluster with at least 3 Masters, 1 Public Agent, and 8 Private Agents is required for an aggregate of 36 CPU, 132 GiB Memory, and 1 TiB storage.
 
 Deploy Kubernetes on DC/OS
 ```
