@@ -58,9 +58,8 @@ terraform apply -var-file desired_cluster_profile.tfvars
 
 ### Portworx
   - Create and attach AWS EBS volumes to all participating private nodes
-  ```
-  Tip: Search for your EC2 instances using your GitHub username. Then identify your EC2 instances using a unique Tag for quicker attachment of EBS volumes.
-  ```
+    - Tip: Search for your EC2 instances using your GitHub username. Then identify your EC2 instances using a unique Tag for quicker attachment of EBS volumes.
+
   - Deploy Portworx
     - Enable etcd.
     - Enable Lighthouse.
