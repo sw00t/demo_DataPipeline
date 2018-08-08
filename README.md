@@ -57,18 +57,20 @@ terraform apply -var-file desired_cluster_profile.tfvars
 ```
 
 ### Portworx
-  - Create and attach AWS EBS volumes to all participating private nodes
-    - Tip: Search for your EC2 instances using your GitHub username. Then identify your EC2 instances using a unique Tag for quicker attachment of EBS volumes.
-
+  - Search for your AWS EC2 instances in the AWS Management Console using your GitHub username. 
+  - Create an AWS EBS volume of any size (e.g. 100 Gb) for the quantity of participating DC/OS Private Agents.
+    - Identify your AWS EC2 instances using a unique Tag.
+  - Attach the AWS EBS volumes to all participating DC/OS Private Agents.
+  
   - Deploy Portworx
     - Enable etcd.
     - Enable Lighthouse.
     - Set node count to the quantity of nodes in your DC/OS cluster.
 
-  - Deploy [Repoxy](https://docs.portworx.com/scheduler/mesosphere-dcos/lighthouse-marathon.html#accessing-lighthouse)
-  - Access Portworx Lighthouse: 
-    - http://PublicAgentIP:9999
-    - portworx@yourcompany.com / admin
+    - Deploy [Repoxy](https://docs.portworx.com/scheduler/mesosphere-dcos/lighthouse-marathon.html#accessing-lighthouse)
+    - Access Portworx Lighthouse: 
+      - http://PublicAgentIP:9999
+      - portworx@yourcompany.com / admin
 
 
 ### Packages
