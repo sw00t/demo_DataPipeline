@@ -57,8 +57,15 @@ terraform apply -var-file desired_cluster_profile.tfvars
 ```
 
 ### Portworx
-  - AWS: use Tags, and create & attach EBS volumes to all participating private nodes.
-  - Install Portworx: enable etcd, lighthouse. Set node count to quantity of nodes in your cluster.
+  - Create and attach AWS EBS volumes to all participating private nodes
+  ```
+  Tip: Search for your EC2 instances using your GitHub username. Then identify your EC2 instances using a unique Tag for quicker attachment of EBS volumes.
+  ```
+  - Deploy Portworx
+    - Enable etcd.
+    - Enable Lighthouse.
+    - Set node count to the quantity of nodes in your DC/OS cluster.
+
   - Deploy [Repoxy](https://docs.portworx.com/scheduler/mesosphere-dcos/lighthouse-marathon.html#accessing-lighthouse)
   - Access Portworx Lighthouse: 
     - http://PublicAgentIP:9999
