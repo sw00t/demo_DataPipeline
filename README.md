@@ -9,6 +9,7 @@ A DC/OS cluster with at least 3 Masters, 1 Public Agent, and 8 Private Agents is
 
 
 ## High level steps
+![overview](https://i.imgur.com/BEpyVYS.png)
 1. (1,2) Prepare/Cleanse & Explore data
     - Bring up Jupyter notebook
     - Run Spark job on Portworx-HDFS data from Jupyter notebook
