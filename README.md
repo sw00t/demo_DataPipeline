@@ -66,33 +66,6 @@ terraform apply -var-file desired_cluster_profile.tfvars
     - Set node count to the quantity of nodes in your DC/OS cluster.
     - Enable etcd.
     - Enable Lighthouse.
-
-    - Deploy [Lighthouse](https://docs.portworx.com/scheduler/mesosphere-dcos/lighthouse-marathon.html#accessing-lighthouse)
-    ```
-    {
-      "id": "/lighthouse",
-      "instances": 1,
-      "container": {
-        "type": "DOCKER",
-        "volumes": [
-          {
-            "persistent": {
-              "size": 100
-            },
-            "mode": "RW",
-            "containerPath": "config"
-          }
-        ],
-        "docker": {
-          "image": "portworx/px-lighthouse:1.4.2"
-        }
-      },
-      "cpus": 0.3,
-      "mem": 1024,
-      "requirePorts": false,
-      "cmd": "/entry-point.sh -confpath $MESOS_SANDBOX/config -http_port 8085"
-    }
-    ```
     - Deploy Repoxy
     ```
     {
@@ -133,10 +106,10 @@ terraform apply -var-file desired_cluster_profile.tfvars
       }
     }
     ```
-    - Access Portworx Lighthouse: 
+    - Access Portworx Lighthouse
       - http://PublicAgentIP:9999
       - admin / Password1
-
+    - Add a PX cluster by providing the IP address of any one of the nodes in the cluster.
 
 ### Packages
   - Deploy Kubernetes on DC/OS, with HA enabled, and 3 worker nodes.
