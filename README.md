@@ -135,7 +135,7 @@ terraform apply -var-file desired_cluster_profile.tfvars
     ```
     - Access Portworx Lighthouse: 
       - http://PublicAgentIP:9999
-      - portworx@yourcompany.com / admin
+      - admin / Password1
 
 
 ### Packages
