@@ -37,7 +37,7 @@ num_of_private_agents = "12"
 num_of_public_agents = "1"
 #
 os = "centos_7.4"
-aws_profile = "110465657741_Mesosphere-PowerUser"
+aws_profile = "<Mesosphere AWS user account name>"
 aws_region = "us-west-2"
 aws_bootstrap_instance_type = "m3.large"
 aws_master_instance_type = "m4.xlarge"
