@@ -1,13 +1,6 @@
 # demo_DataPipeline
 **This repository is intended for internal Mesosphere staff only**
 
-Mesosphere repository for Data Pipeline workshops featuring DC/OS, Kubernetes, Kubeflow, TensorFlow, Jupyter, Spark, Portworx, HDFS, Kafka. 
-
-You will need to provision a Mesosphere DC/OS Enterprise Edition cluster in `permissive` mode.
-
-A DC/OS cluster with at least 3 Masters, 1 Public Agent, and 8 Private Agents is required for an aggregate of 36 CPU, 132 GiB Memory, and 1 TiB storage.
-
-
 ## High level steps
 ![overview](https://i.imgur.com/BEpyVYS.png)
 1. (1,2) Prepare/Cleanse & Explore data
@@ -20,6 +13,16 @@ A DC/OS cluster with at least 3 Masters, 1 Public Agent, and 8 Private Agents is
     - Run kubeflow job on K8s on DC/OS
 5. (7) Streaming of Requests
     - Portworx-Kafka for streams
+
+This is a Mesosphere repository for Data Pipeline workshops and demos, featuring DC/OS, Kubernetes, Kubeflow, TensorFlow, Jupyter, Spark, Portworx, HDFS, Kafka. 
+
+You will need the appropriate permissions to AWS to provision a Mesosphere DC/OS Enterprise cluster in `permissive` mode.
+
+Terraform will be used to configure and deploy the DC/OS cluster with a minimum of 3 Masters, 1 Public Agent, and 12 Private Agents.
+
+The purpose of this demo is to showcase DC/OS features and capabilities as a platform to appeal to data scientists, infrastructure, operations, and devops personnel. 
+
+This is currently in progress, and will continue to be updated until indicated otherwise in this README file.
 
 
 ### DC/OS
