@@ -67,7 +67,72 @@ terraform apply -var-file desired_cluster_profile.tfvars
     - Enable etcd.
     - Enable Lighthouse.
 
-    - Deploy [Repoxy](https://docs.portworx.com/scheduler/mesosphere-dcos/lighthouse-marathon.html#accessing-lighthouse)
+    - Deploy [Lighthouse](https://docs.portworx.com/scheduler/mesosphere-dcos/lighthouse-marathon.html#accessing-lighthouse)
+    ```
+    {
+  "id": "/lighthouse",
+  "instances": 1,
+  "container": {
+    "type": "DOCKER",
+    "volumes": [
+      {
+        "persistent": {
+          "size": 100
+        },
+        "mode": "RW",
+        "containerPath": "config"
+      }
+    ],
+    "docker": {
+      "image": "portworx/px-lighthouse:1.4.2"
+    }
+  },
+  "cpus": 0.3,
+  "mem": 1024,
+  "requirePorts": false,
+  "cmd": "/entry-point.sh -confpath $MESOS_SANDBOX/config -http_port 8085"
+}
+```
+    - Deploy Repoxy
+```
+{
+  "id": "/repoxy",
+  "cpus": 0.1,
+  "acceptedResourceRoles": [
+      "slave_public"
+  ],
+  "instances": 1,
+  "mem": 128,
+  "container": {
+    "type": "DOCKER",
+    "docker": {
+      "image": "mesosphere/repoxy:2.0.0"
+    },
+    "volumes": [
+      {
+        "containerPath": "/opt/mesosphere",
+        "hostPath": "/opt/mesosphere",
+        "mode": "RO"
+      }
+    ]
+  },
+  "cmd": "/proxyfiles/bin/start marathon $PORT0",
+  "portDefinitions": [
+    {
+      "port": 9998,
+      "protocol": "tcp"
+    },
+    {
+      "port": 9999,
+      "protocol": "tcp"
+    }
+  ],
+  "requirePorts": true,
+  "env": {
+    "PROXY_ENDPOINT_0": "Lighthouse,http,lighthouse,mesos,8085,/,/"
+  }
+}
+```
     - Access Portworx Lighthouse: 
       - http://PublicAgentIP:9999
       - portworx@yourcompany.com / admin
