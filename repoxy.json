@@ -1,0 +1,38 @@
+{
+  "id": "/repoxy",
+  "cpus": 0.1,
+  "acceptedResourceRoles": [
+      "slave_public"
+  ],
+  "instances": 1,
+  "mem": 128,
+  "container": {
+    "type": "DOCKER",
+    "docker": {
+      "image": "mesosphere/repoxy:2.0.0"
+    },
+    "volumes": [
+      {
+        "containerPath": "/opt/mesosphere",
+        "hostPath": "/opt/mesosphere",
+        "mode": "RO"
+      }
+    ]
+  },
+  "cmd": "/proxyfiles/bin/start portworx $PORT0",
+  "portDefinitions": [
+    {
+      "port": 9998,
+      "protocol": "tcp"
+    },
+    {
+      "port": 9999,
+      "protocol": "tcp"
+    }
+  ],
+  "requirePorts": true,
+  "env": {
+    "PROXY_ENDPOINT_0": "Lighthouse,http,lighthouse-0-start,mesos,8085,/,/"
+  }
+}
+

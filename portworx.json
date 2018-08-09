@@ -1,0 +1,49 @@
+{
+  "service": {
+    "name": "portworx",
+    "user": "root",
+    "principal": "",
+    "secret_name": "",
+    "mesos_api_version": "V1"
+  },
+  "node": {
+    "portworx_cluster": "portworx-dcos",
+    "portworx_image": "portworx/px-enterprise:1.4.2.1",
+    "portworx_port_range_start": 9001,
+    "portworx_options": "-a -x mesos",
+    "kvdb_servers": "",
+    "container_parameters": "",
+    "count": 12,
+    "placement_constraint": "hostname:UNIQUE"
+  },
+  "secrets": {
+    "enabled": false,
+    "base_path": "",
+    "dcos_username_secret": "portworx/dcos_username",
+    "dcos_password_secret": "portworx/dcos_password"
+  },
+  "etcd": {
+    "enabled": true,
+    "proxy_enabled": false,
+    "placement_constraint": "hostname:UNIQUE",
+    "image": "mesosphere/etcd-mesos:latest",
+    "cpus": 0.3,
+    "mem": 1024,
+    "disk_type": "ROOT",
+    "disk_size": 5120,
+    "node_advertise_port": 1026,
+    "node_peer_port": 1027,
+    "proxy_advertise_port": 2379
+  },
+  "lighthouse": {
+    "enabled": true,
+    "placement_constraint": "",
+    "public_agent": true,
+    "cpus": 0.3,
+    "mem": 1024,
+    "image": "portworx/px-lighthouse:1.4.2",
+    "webui_port": 8085,
+    "company_name": "Portworx",
+    "admin_username": "admin"
+  }
+}
