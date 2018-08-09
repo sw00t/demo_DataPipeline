@@ -1,6 +1,16 @@
 # demo_DataPipeline
 **This repository is for internal Mesosphere staff only**
 
+The goal of this demo is to show audiences in which DC/OS facilitates ease of lifecycle mgmt for data services, leverage kubeflow independently or on Kubernetes on DC/OS, and other components to build out your data pipeline, whether it's open source, public cloud, or hybrid of both.
+
+Featured components include DC/OS, Kubernetes, Kubeflow, TensorFlow, Jupyter, Spark, Portworx, HDFS, Kafka. 
+
+You will need the appropriate permissions in AWS to provision a Mesosphere DC/OS Enterprise cluster using Terraform. 
+The DC/OS cluster should have at minimum 3 Masters, 1 Public Agent, and 12 Private Agents.
+
+This repository is a **Work In Progress**, until indicated otherwise in this README. Enjoy!
+
+
 ## High level steps
 ![overview](https://i.imgur.com/BEpyVYS.png)
 1. Stage 1, 2: Prepare/Cleanse & Explore Data
@@ -14,14 +24,6 @@
 5. Stage 7: Streaming of Requests
     - Portworx-Kafka
 
-This is a Mesosphere repository to be used for Data Pipeline workshops and demos. Featured components include DC/OS, Kubernetes, Kubeflow, TensorFlow, Jupyter, Spark, Portworx, HDFS, Kafka. 
-
-The purpose of this demo is to showcase DC/OS features and capabilities as a platform, to appeal to data scientists, infrastructure, operations, and devops personnel. 
-
-You will need the appropriate permissions in AWS to provision a Mesosphere DC/OS Enterprise cluster using Terraform. 
-The DC/OS cluster should have at minimum 3 Masters, 1 Public Agent, and 12 Private Agents.
-
-This is currently in progress, and will continue to be updated until indicated otherwise in this README. Enjoy!
 
 
 ### DC/OS
@@ -29,155 +31,153 @@ This is currently in progress, and will continue to be updated until indicated o
 ```
 maws login [AWS user account]
 ```
-  - Deploy a DC/OS cluster 12 pvt nodes 1 public using Terraform
+  - Update **desired_cluster_profile.tfvars** with correct values for **aws_profile**, and **dcos_license_key_contents**
+  - Use Terraform and the above tfvars file to deploy a DC/OS cluster of 3 masters, 12 private agents, and 1 public agent.
 ```
-dcos_version = "1.11.4"
-num_of_masters = "3"
-num_of_private_agents = "12"
-num_of_public_agents = "1"
-#
-os = "centos_7.4"
-aws_profile = "<Mesosphere AWS user account name>"
-aws_region = "us-west-2"
-aws_bootstrap_instance_type = "m3.large"
-aws_master_instance_type = "m4.xlarge"
-aws_agent_instance_type = "m4.xlarge"
-aws_public_agent_instance_type = "m4.xlarge"
-ssh_key_name = "default"
-# Inbound Master Access
-admin_cidr = "0.0.0.0/0"
-dcos_exhibitor_storage_backend = "aws_s3"
-dcos_exhibitor_explicit_keys = "false"
-dcos_master_discovery = "master_http_loadbalancer"
-dcos_license_key_contents = "<DC/OS license>"
-```
-```
+mkdir dcos-installer
 cd dcos-installer
 terraform apply -var-file desired_cluster_profile.tfvars
 ```
+  - On completion, take note of all IPs in the summary.
 
-### Portworx
-  - Search for your AWS EC2 instances in the AWS Management Console using your GitHub username. 
-  - Create an AWS EBS volume of any size (e.g. 100 Gb) for the quantity of participating DC/OS Private Agents.
+### Portworx preparation
+  - Identify your EC2 instances in the AWS Management Console. 
+  - Create EBS volumes in the same AWS Region as your EC2 instances (e.g. 100 Gb, 12 EBS volumes).
     - Identify your AWS EC2 instances using a unique Tag.
-  - Attach the AWS EBS volumes to all participating DC/OS Private Agents.
-  
-  - Deploy Portworx
-    - Set node count to the quantity of nodes in your DC/OS cluster.
-    - Enable etcd.
-    - Enable Lighthouse.
-    - Deploy Repoxy
-    ```
-    {
-      "id": "/repoxy",
-      "cpus": 0.1,
-      "acceptedResourceRoles": [
-          "slave_public"
-      ],
-      "instances": 1,
-      "mem": 128,
-      "container": {
-        "type": "DOCKER",
-        "docker": {
-          "image": "mesosphere/repoxy:2.0.0"
-        },
-        "volumes": [
-          {
-            "containerPath": "/opt/mesosphere",
-            "hostPath": "/opt/mesosphere",
-            "mode": "RO"
-          }
-        ]
-      },
-      "cmd": "/proxyfiles/bin/start marathon $PORT0",
-      "portDefinitions": [
-        {
-          "port": 9998,
-          "protocol": "tcp"
-        },
-        {
-          "port": 9999,
-          "protocol": "tcp"
-        }
-      ],
-      "requirePorts": true,
-      "env": {
-        "PROXY_ENDPOINT_0": "Lighthouse,http,lighthouse,mesos,8085,/,/"
-      }
-    }
-    ```
-    - Access Portworx Lighthouse
-      - http://PublicAgentIP:9999
-      - admin / Password1
-    - Add a PX cluster by providing the IP address of any one of the nodes in the cluster.
+  - Attach the 12 AWS EBS volumes to all 12 private agents.
 
-### Packages
-  - Deploy Kubernetes on DC/OS, with HA enabled, and 3 worker nodes.
+### DC/OS CLI
+  - Configure your CLI to access the DC/OS cluster, and install Marathon-LB.
 ```
-dcos package install kubernetes
-```
-  - Deploy Marathon-LB.
-```
-dcos package install marathon-lb
-```
-  - Deploy Portworx-hadoop on DC/OS
-```
-dcos package install portworx-hadoop
+dcos cluster setup <MasterIP>
+dcos package install marathon-lb --yes
 ```
 
-
-### Kubernetes
-  - [Expose the Kubernetes API using Marathon-LB without TLS Certificate Verification](https://docs.mesosphere.com/services/kubernetes/1.2.0-1.10.5/exposing-the-kubernetes-api-marathonlb/)
+### Kubernetes 1.1.1-1.10.4
+  - Install kubectl-proxy.json
 ```
 dcos marathon app add kubectl-proxy.json
 ```
-  - Find public agent IP
-    - Use the Public Agent IP indicated on commpletion of applying the Terraform configuration, or:
-    ```
-    for id in $(dcos node --json | jq --raw-output '.[] | select(.attributes.public_ip == "true") | .id'); do dcos node ssh --option StrictHostKeyChecking=no --option LogLevel=quiet --master-proxy --mesos-id=$id "curl -s ifconfig.co" ; done 2>/dev/null
-    ``` 
-  -Configure kubectl to access the Kubernetes API without validating the presented TLS certificate:
+  - Install Kubernetes on DC/OS with HA enabled and 3 worker nodes, via the DC/OS GUI
+  - Alternately, use the k8s-options.json to deploy by CLI
+```
+dcos package install kubernetes --package-version=1.1.1-1.10.4 --options=k8s-options.json
+```
+  - Watch deployment progress
+```
+brew install watch
+watch -n1 dcos kubernetes plan status deploy
+```
+  - Configure kubectl with the Public Agent IP without TLS verification
 ```
 dcos kubernetes kubeconfig --apiserver-url https://PubAgentIP:6443 --insecure-skip-tls-verify
 ```
 
-### Deploy ksonnet
+### Portworx 1.3.1-4.2.1
+  - Install Portworx
+    - Set node count to the quantity of nodes in your DC/OS cluster.
+    - Enable etcd.
+    - Enable Lighthouse.
+  -  Alternately, use the px-options.json to deploy by CLI
+```
+dcos package install portworx --package-version=1.3.1-4.2.1 --options=px-options.json
+```
+  - Install the Portworx CLI
+```
+dcos package install portworx --package-version=1.3.1-4.2.1 --cli --yes
+```
+  - Watch deployment progress
+```
+watch -n1 dcos portworx plan status deploy
+```
+  - Deploy Repoxy
+```
+dcos marathon app add repoxy.json
+```
+
+### Portworx Lighthouse
+  - Browse to http://<Public Agent IP>:9999
+    - admin / Password1
+  - If required, add the Portworx cluster by providing the IP address of any one of the nodes in the cluster.
+
+
+### Kubeflow (optional)
+  - Install Kubeflow components on Kubernetes either independently, or on Kubernetes on DC/OS.
+### Install ksonnet (optional)
 ```
 brew install ksonnet/tap/ks
 ```
 
-### Kubeflow
-#### Deploy Jupyterlab
+### HDFS / Hadoop
+  - Deploy Portworx-hadoop on DC/OS for use with JupyterLab
 ```
-dcos package install jupyterlab
+dcos package install portworx-hadoop
 ```
 
-  - Networking: use the public agent ELB address
-  - Enable checkbox: 'Start Tensorboard'
-- Access Jupyter: 
-    - http://**publicAgentIP**:10104/jupyterlab-notebook/login
-    - UI password: jupyter
+### JupyterLab 1.2.0-0.33.7
+  - Install JupyterLab via the DC/OS GUI
+    - Networking: External Access: external public agent hostname: <Public Agent ELB Address>
+    - Environment: Environment: jupyter conf urls: http://api.portworx-hadoop.marathon.l4lb.thisdcos.directory/v1/endpoints
+    - Enable checkbox 'Start Tensorboard'
+    - Click on Review & Run
 
+### Access Jupyter
+```
+http://<Public Agent IP>:10104/jupyterlab-notebook/login
+```
+  - Password: jupyter
 
+### SparkPi Job
+  - Once logged in to Jupyter, launch Terminal.
+  - In another browser window, open http://<Master IP>/mesos/ and show Spark task that are about to be run.
+  - Run the following Spark job:
+  ```
+  eval spark-submit ${SPARK_OPTS} --verbose --class org.apache.spark.examples.SparkPi /opt/spark/examples/jars/spark-examples_2.11-2.2.1.jar 100
+  ```
+  - Highlight where the value of Pi is calculated, and the Spark teardown log messages.
 
-#### Jupyterlab - run test Spark job in Terminal
-  - Terminal
-  - [Github repo](https://github.com/dcos-labs/dcos-jupyterlab-service/blob/master/DEPLOY-STRICT.md)
-    - Paste into Jupyterlab Terminal: cmd under Submit a test SparkPi Job section
-    - Clone the Yahoo TensorFlowOnSpark Github Repo
-    - Prepare MNIST Dataset in CSV format and store on S3
-    - Prepare MNIST Dataset in CSV format and store on HDFS
-    - Show available endpoints in portworx-hadoop, using the Jupyterlab Terminal
-    - DCOS > Services > Environment > Jupyter Conf Urls
-      - Jupyter Terminal: 
-      - curl http://api.portworx-hadoop.marathon.l4lb.thisdcos.directory/v1/endpoints
-
-
-### Deploy Kubeflow
-* https://www.kubeflow.org/docs/about/user_guide/
 
 ### TensorBoard
-* https://www.tensorflow.org/guide/summaries_and_tensorboard
+  - Access TensorBoard to show visualization via the UI: https://<Public Agent ELB Address>/jupyterlab-notebook/tensorboard/
+
+
+### MNIST TensorFlowOnSpark
+  - In the JupyterLab Terminal, clone the following repository:
+  ```
+  git clone https://github.com/yahoo/TensorFlowOnSpark
+  ```
+  - Retrieve and extract the raw MNIST dataset:
+  ```
+  cd $MESOS_SANDBOX
+  curl -fsSL -O https://s3.amazonaws.com/vishnu-mohan/tensorflow/mnist/mnist.zip
+  unzip mnist.zip
+  ```
+  - Check HDFS to show the directory is empty:
+  ```
+  hdfs dfs -ls  mnist/
+  ```
+  - Prepare the MNIST dataset:
+  ```
+  eval spark-submit ${SPARK_OPTS} --verbose $(pwd)/TensorFlowOnSpark/examples/mnist/mnist_data_setup.py --output mnist/csv --format csv
+  ```
+  - Check the results of trained model on HDFS:
+  ```
+  hdfs dfs -ls -R  mnist/
+  ```
+  - Train the MNIST model with CPUs from the Terminal:
+  ```
+  eval spark-submit ${SPARK_OPTS} --verbose --conf spark.mesos.executor.docker.image=dcoslabs/dcos-jupyterlab:1.2.0-0.33.7 --py-files $(pwd)/TensorFlowOnSpark/examples/mnist/spark/mnist_dist.py $(pwd)/TensorFlowOnSpark/examples/mnist/spark/mnist_spark.py --cluster_size 5 --images mnist/csv/train/images --labels mnist/csv/train/labels --format csv --mode train --model mnist/mnist_csv_model
+  ```
+  - Check for the trained model on HDFS:
+  ```
+  hdfs dfs -ls -R mnist/mnist_csv_model
+  ```
+
+
+### Kubernetes Day 2 Operations (optional)
+  - Install a second Kubernetes cluster on DC/OS
+  - Configure kubectl
+  - Perform a Kubernetes version upgrade
 
 
 ### Deploy Portworx-Kafka on DC/OS
@@ -187,10 +187,11 @@ dcos package install portworx-kafka
 
 
 ### Clean Up
+  - Destroy the DC/OS cluster using Terraform:
 ```
 terraform destroy -var-file desired_cluster_profile.tfvars
 ```
-* Manual AWS cleanup for EBS volumes
+  - Remove all AWS EBS volumes via the AWS Management Console.
 
 
 
@@ -199,20 +200,12 @@ terraform destroy -var-file desired_cluster_profile.tfvars
 
 
 
-
-
-
-
-
-
-
-
-
-### Resources, made possible by and/or for:
+## Resources
 * [Mesosphere DC/OS](https://dcos.io)
 * [Mesosphere DC/OS Enterprise](https://mesosphere.com/product)
 * [Joerg Schad](https://github.com/joerg84)
-* [Jupyter Notebooks with the BeakerX JVM Kernels on Mesosphere DC/OS](https://github.com/dcos-labs/dcos-jupyterlab-service/blob/master/DEPLOY-STRICT.md)
+* [Fast Data: Data Analytics with JupyterLab, Spark and TensorFlow](https://github.com/dcos/demos/tree/822a64143bcd7df2f6027c053f664eeb038e9693/jupyterlab/1.11)
+* [How to use JupyterLab on DC/OS](https://github.com/dcos/examples/tree/master/jupyterlab/1.11)
 * [Install Mesosphere DC/OS Enterprise on AWS](https://github.com/mesosphere/terraform-dcos-enterprise/blob/master/aws/README.md)
-* [Kubeflow](https://www.kubeflow.org)
+* [Kubeflow](https://www.kubeflow.org/docs/about/user_guide/)
 * [Portworx](https://www.portworx.com)
