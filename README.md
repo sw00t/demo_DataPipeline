@@ -59,7 +59,7 @@ watch -n1 dcos kubernetes plan status deploy
 ```
   - Configure kubectl with the Public Agent IP without TLS verification
 ```
-dcos kubernetes kubeconfig --apiserver-url https://PubAgentIP:6443 --insecure-skip-tls-verify
+dcos kubernetes kubeconfig --apiserver-url https://**PubAgentIP**:6443 --insecure-skip-tls-verify
 ```
 
 ### Portworx 1.3.1-4.2.1
@@ -85,7 +85,7 @@ dcos marathon app add repoxy.json
 ```
 
 ### Portworx Lighthouse
-  - Browse to http://<Public Agent IP>:9999
+  - Browse to http://**Public Agent IP**:9999
     - admin / Password1
   - If required, add the Portworx cluster by providing the IP address of any one of the nodes in the cluster.
 
@@ -105,20 +105,20 @@ dcos package install portworx-hadoop
 
 ### JupyterLab 1.2.0-0.33.7
   - Install JupyterLab via the DC/OS GUI
-    - Networking: External Access: external public agent hostname: <Public Agent ELB Address>
+    - Networking: External Access: external public agent hostname: **Public Agent ELB Address**
     - Environment: Environment: jupyter conf urls: http://api.portworx-hadoop.marathon.l4lb.thisdcos.directory/v1/endpoints
     - Enable checkbox 'Start Tensorboard'
     - Click on Review & Run
 
 ### Access Jupyter
 ```
-http://<Public Agent IP>:10104/jupyterlab-notebook/login
+http://**Public Agent IP**:10104/jupyterlab-notebook/login
 ```
   - Password: jupyter
 
 ### SparkPi Job
   - Once logged in to Jupyter, launch Terminal.
-  - In another browser window, open http://<Master IP>/mesos/ and show Spark task that are about to be run.
+  - In another browser window, open http://**Master IP**/mesos/ and show Spark task that are about to be run.
   - Run the following Spark job:
   ```
   eval spark-submit ${SPARK_OPTS} --verbose --class org.apache.spark.examples.SparkPi /opt/spark/examples/jars/spark-examples_2.11-2.2.1.jar 100
@@ -141,7 +141,7 @@ http://<Public Agent IP>:10104/jupyterlab-notebook/login
   
 
 ### TensorBoard
-  - Access TensorBoard to show visualization via the UI: https://<Public Agent ELB Address>/jupyterlab-notebook/tensorboard/
+  - Access TensorBoard to show visualization via the UI: https://**Public Agent ELB Address**/jupyterlab-notebook/tensorboard/
 
 
 ### MNIST TensorFlowOnSpark
