@@ -11,7 +11,11 @@ The DC/OS cluster should have at minimum 3 Masters, 1 Public Agent, and 12 Priva
 This repository is a **Work In Progress**, until indicated otherwise in this README. Enjoy!
 
 
-## High level steps
+## Demo: Data Science Pipeline on DC/OS
+![.](https://i.imgur.com/gzgMOAg.png)
+
+
+## Example: Open Source Data Pipeline
 ![overview](https://i.imgur.com/BEpyVYS.png)
 1. Stage 1, 2: Prepare/Cleanse & Explore Data
     - Run a Spark job on Portworx-HDFS data from Jupyter notebook
