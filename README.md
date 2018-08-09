@@ -125,6 +125,20 @@ http://<Public Agent IP>:10104/jupyterlab-notebook/login
   ```
   - Highlight where the value of Pi is calculated, and the Spark teardown log messages.
 
+### SparkPi with Apache Toree
+  - Launch the **Apache Toree Scala** kernel in a new notebook
+  - Run the SparkPi example to compute Pi:
+  ```
+  val count2 = spark.sparkContext.parallelize(1 to NUM_SAMPLES).map{i =>
+  val x = Math.random()
+  val y = Math.random()
+  if (x*x + y*y < 1) 1 else 0
+  }.reduce(_ + _)
+
+  println("Pi is roughly " + 4.0 * count2 / NUM_SAMPLES)
+  ```
+  - click the Play button, observe the results.
+  
 
 ### TensorBoard
   - Access TensorBoard to show visualization via the UI: https://<Public Agent ELB Address>/jupyterlab-notebook/tensorboard/
