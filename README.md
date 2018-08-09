@@ -129,6 +129,7 @@ http://**Public Agent IP**:10104/jupyterlab-notebook/login
   - Launch the **Apache Toree Scala** kernel in a new notebook
   - Run the SparkPi example to compute Pi:
   ```
+  val NUM_SAMPLES = 10000000
   val count2 = spark.sparkContext.parallelize(1 to NUM_SAMPLES).map{i =>
   val x = Math.random()
   val y = Math.random()
