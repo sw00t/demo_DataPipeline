@@ -3,7 +3,7 @@
 
 The goal of this demo is to show audiences in which DC/OS facilitates ease of lifecycle mgmt for data services, leverage kubeflow independently or on Kubernetes on DC/OS, and other components to build out your data pipeline, whether it's open source, public cloud, or hybrid of both.
 
-Featured components include DC/OS, Kubernetes, Kubeflow, TensorFlow, Jupyter, Spark, Portworx, HDFS, Kafka. 
+Featured components include DC/OS, Kubernetes, TensorFlow, Jupyter, Spark, Portworx, HDFS. Future updates to include Kubeflow, Kafka, more.
 
 You will need the appropriate permissions in AWS to provision a Mesosphere DC/OS Enterprise cluster using Terraform. 
 The DC/OS cluster should have at minimum 3 Masters, 1 Public Agent, and 12 Private Agents.
