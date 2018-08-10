@@ -184,32 +184,6 @@ terraform destroy -var-file desired_cluster_profile.tfvars
 ```
   - Remove all AWS EBS volumes via the AWS Management Console.
 
----
-
-Work In Progress:
-## Example: Open Source Data Pipeline
-![overview](https://i.imgur.com/BEpyVYS.png)
-1. Stage 1, 2: Prepare/Cleanse & Explore Data
-    - Run a Spark job on Portworx-HDFS data from Jupyter notebook
-2. Stage 3: Model Training
-    - Run TensorFlow on a job single CPU only node (GPU ideal if available)
-3. Stage 4, 5: Monitoring, Debugging
-    - TensorBoard, [TFDBG](https://www.tensorflow.org/guide/debugger)
-4. Stage 6: Model Serving 
-    - Run kubeflow job on Kubernetes on DC/OS
-5. Stage 7: Streaming of Requests
-    - Portworx-Kafka
-
-### Kubernetes Day 2 Operations (optional)
-  - Install a second Kubernetes cluster on DC/OS
-  - Configure kubectl
-  - Perform a Kubernetes version upgrade
-
-### Deploy Portworx-Kafka on DC/OS
-```
-dcos package install portworx-kafka
-```
-
 
 
 
